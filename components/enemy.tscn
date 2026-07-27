@@ -2,9 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://dwfr2ucs3bm4f" path="res://components/actor.tscn" id="1_actor"]
 [ext_resource type="Shader" uid="uid://7hya7hvp3f8j" path="res://shaders/sprite_shine.gdshader" id="2_spgjl"]
+[ext_resource type="Texture2D" uid="uid://ccljqplhe35xp" path="res://assets/dummy-char.png" id="3_de3sc"]
 [ext_resource type="Script" uid="uid://bqd5d8bqy5x5c" path="res://components/base/enemy_component.gd" id="3_enemy"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hog6v"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_de3sc"]
 resource_local_to_scene = true
 shader = ExtResource("2_spgjl")
 shader_parameter/is_shining = false
@@ -15,12 +16,18 @@ shader_parameter/shine_frequency = 8.0
 [node name="MoveComponent" parent="." index="0" unique_id=1240798177]
 movement_enabled = false
 
-[node name="KnockbackComponent" parent="." index="6"]
+[node name="KnockbackComponent" parent="." index="6" unique_id=661341235]
 deceleration = 1500.0
 
+[node name="CollisionShape2D" parent="HurtboxComponent" parent_id_path=PackedInt32Array(1083354207) index="0" unique_id=1419816795]
+polygon = PackedVector2Array(-11, -33, 10, -33, 10, 8, -11, 8)
+
 [node name="Sprite" parent="." index="8" unique_id=277341190]
-modulate = Color(0.519594, 0.9903502, 0.7732215, 1)
-material = SubResource("ShaderMaterial_hog6v")
+material = SubResource("ShaderMaterial_de3sc")
+texture = ExtResource("3_de3sc")
+offset = Vector2(0, -20)
+region_enabled = true
+region_rect = Rect2(108, 8, 24, 56)
 
 [node name="EnemyComponent" type="Node" parent="." index="10" unique_id=1040154089]
 script = ExtResource("3_enemy")

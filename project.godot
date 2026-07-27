@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Gauho & Aliens"
-run/main_scene="uid://bpycisa30rnf5"
+config/name="Gaucho & Aliens"
+run/main_scene="uid://btt3mjflhqibs"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
@@ -23,8 +23,6 @@ RoomManager="*res://components/base/room_manager.gd"
 
 window/size/viewport_width=480
 window/size/viewport_height=270
-window/size/window_width_override=1920
-window/size/window_height_override=1080
 window/stretch/mode="canvas_items"
 window/per_pixel_transparency/allowed=true
 

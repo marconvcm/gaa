@@ -4,15 +4,13 @@
 [ext_resource type="Script" uid="uid://b3uxm67ujk17h" path="res://components/base/player_input_component.gd" id="2_51jd6"]
 [ext_resource type="Shader" uid="uid://7hya7hvp3f8j" path="res://shaders/sprite_shine.gdshader" id="3_5odhx"]
 [ext_resource type="Script" uid="uid://bldsgads3pk87" path="res://components/base/game_camera.gd" id="3_camera"]
+[ext_resource type="Texture2D" uid="uid://ccljqplhe35xp" path="res://assets/dummy-char.png" id="4_1kub6"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5odhx"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1kub6"]
 resource_local_to_scene = true
 shader = ExtResource("3_5odhx")
 shader_parameter/is_shining = false
 shader_parameter/shine_frequency = 8.0
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0g4kb"]
-size = Vector2(16, 16)
 
 [node name="Player" unique_id=1988717880 instance=ExtResource("1_0g4kb")]
 
@@ -26,10 +24,15 @@ metadata/_custom_type_script = "uid://b3uxm67ujk17h"
 [node name="ShotComponent" parent="." index="3" unique_id=166561211]
 cooldown = 0.1
 
+[node name="CollisionShape2D" parent="HurtboxComponent" parent_id_path=PackedInt32Array(1083354207) index="0" unique_id=1419816795]
+polygon = PackedVector2Array(-11, -32, 11, -32, 11, 8, -11, 8)
+
 [node name="Sprite" parent="." index="9" unique_id=277341190]
-modulate = Color(0.09101673, 0.5175702, 0.5869913, 1)
-material = SubResource("ShaderMaterial_5odhx")
-texture = SubResource("PlaceholderTexture2D_0g4kb")
+material = SubResource("ShaderMaterial_1kub6")
+texture = ExtResource("4_1kub6")
+offset = Vector2(0, -20)
+region_enabled = true
+region_rect = Rect2(204, 8, 24, 56)
 
 [node name="Camera" type="Camera2D" parent="." index="11" unique_id=463979637]
 position_smoothing_enabled = true

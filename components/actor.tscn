@@ -5,16 +5,10 @@
 [ext_resource type="Script" uid="uid://bxr03iumhqu8q" path="res://components/base/shot_component.gd" id="3_shot"]
 [ext_resource type="Script" uid="uid://cjkqsi1ff51lp" path="res://components/base/hurtbox_component.gd" id="4_hurtbox"]
 [ext_resource type="Script" uid="uid://dkxdgoqud4xmi" path="res://components/base/melee_component.gd" id="5_melee"]
-[ext_resource type="Shader" path="res://shaders/sprite_shine.gdshader" id="6_shine_shader"]
-[ext_resource type="Script" path="res://components/base/hp_component.gd" id="7_hp"]
-[ext_resource type="Script" path="res://components/base/active_value.gd" id="8_active_value"]
-[ext_resource type="Script" path="res://components/base/knockback_component.gd" id="9_knockback"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ails4"]
-size = Vector2(16, 16)
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kj1b4"]
-size = Vector2(16, 16)
+[ext_resource type="Shader" uid="uid://7hya7hvp3f8j" path="res://shaders/sprite_shine.gdshader" id="6_shine_shader"]
+[ext_resource type="Script" uid="uid://q8bkecjuhmdh" path="res://components/base/hp_component.gd" id="7_hp"]
+[ext_resource type="Script" uid="uid://itf8uevu8koi" path="res://components/base/active_value.gd" id="8_active_value"]
+[ext_resource type="Script" uid="uid://dby2tnx31bqho" path="res://components/base/knockback_component.gd" id="9_knockback"]
 
 [sub_resource type="Animation" id="Animation_melee_attack"]
 resource_name = "melee_attack"
@@ -34,12 +28,20 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_actor"]
 _data = {
-"melee_attack": SubResource("Animation_melee_attack")
+&"melee_attack": SubResource("Animation_melee_attack")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sprite_shine"]
 resource_local_to_scene = true
 shader = ExtResource("6_shine_shader")
+shader_parameter/is_shining = false
+shader_parameter/shine_frequency = 8.0
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kj1b4"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ails4"]
+size = Vector2(16, 16)
 
 [node name="Actor" type="CharacterBody2D" unique_id=1519086564]
 
@@ -49,6 +51,7 @@ metadata/_custom_type_script = "uid://ck0x76x4hxtql"
 
 [node name="DebugActorComponent" type="Node2D" parent="." unique_id=768223778]
 script = ExtResource("2_debug")
+health_bar_offset = Vector2(0, 18)
 
 [node name="ShotComponent" type="Node" parent="." unique_id=166561211]
 script = ExtResource("3_shot")
@@ -59,25 +62,23 @@ cooldown = 0.1
 attack_distance = 16.0
 hitbox_size = Vector2(24, 24)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_actor")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=557777032]
+libraries/ = SubResource("AnimationLibrary_actor")
 
-[node name="HPComponent" type="Node" parent="."]
+[node name="HPComponent" type="Node" parent="." unique_id=1643826867]
 script = ExtResource("7_hp")
 
-[node name="ActiveValue" type="Node" parent="HPComponent"]
+[node name="ActiveValue" type="Node" parent="HPComponent" unique_id=1305892158]
 script = ExtResource("8_active_value")
 
-[node name="KnockbackComponent" type="Node" parent="."]
+[node name="KnockbackComponent" type="Node" parent="." unique_id=661341235]
 script = ExtResource("9_knockback")
 
 [node name="HurtboxComponent" type="Area2D" parent="." unique_id=1083354207]
 script = ExtResource("4_hurtbox")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent" unique_id=348203513]
-shape = SubResource("RectangleShape2D_ails4")
+[node name="Shape" type="CollisionPolygon2D" parent="HurtboxComponent" unique_id=1419816795]
+polygon = PackedVector2Array(-7, -7, 6, -7, 6, 6, -7, 6)
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=277341190]
 material = SubResource("ShaderMaterial_sprite_shine")

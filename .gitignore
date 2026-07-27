@@ -1,3 +1,5 @@
 # Godot 4+ specific ignores
+.export
+.kra
 .godot/
 /android/

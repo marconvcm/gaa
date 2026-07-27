@@ -2,5 +2,5 @@
 format = png
 png_profile = pixel_art
 output_dir = .
-overwrite = false
+overwrite = true
 recursive = false
