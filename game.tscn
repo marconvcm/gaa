@@ -1,3 +1,23 @@
 [gd_scene format=3 uid="uid://bpycisa30rnf5"]
 
+[ext_resource type="PackedScene" uid="uid://bquco3n22ufxh" path="res://components/npc.tscn" id="1_e2o6t"]
+[ext_resource type="PackedScene" uid="uid://cmshjjkpmlxth" path="res://components/player.tscn" id="2_e2o6t"]
+[ext_resource type="PackedScene" uid="uid://ddpbhl3ydqp88" path="res://components/enemy.tscn" id="3_enemy"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_arena"]
+vertices = PackedVector2Array(-32, -32, 512, -32, 512, 302, -32, 302)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+
 [node name="Game" type="Node2D" unique_id=1481794855]
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=1306446197]
+navigation_polygon = SubResource("NavigationPolygon_arena")
+
+[node name="Actor" parent="." unique_id=1988717880 instance=ExtResource("1_e2o6t")]
+position = Vector2(82, 26)
+
+[node name="Player" parent="." unique_id=215264622 instance=ExtResource("2_e2o6t")]
+position = Vector2(124, 123)
+
+[node name="Enemy" parent="." unique_id=1933021834 instance=ExtResource("3_enemy")]
+position = Vector2(200, 123)

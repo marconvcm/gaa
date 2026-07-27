@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bquco3n22ufxh"]
+
+[ext_resource type="PackedScene" uid="uid://dwfr2ucs3bm4f" path="res://components/actor.tscn" id="1_qr0sk"]
+[ext_resource type="Script" uid="uid://crpac38giisi5" path="res://components/base/ai_input_component.gd" id="2_lq7hc"]
+
+[node name="Actor" unique_id=1988717880 instance=ExtResource("1_qr0sk")]
+
+[node name="AIInputComponent" type="Node" parent="." index="1" unique_id=702941078]
+script = ExtResource("2_lq7hc")
+metadata/_custom_type_script = "uid://crpac38giisi5"
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." index="2" unique_id=1106737934]
+path_desired_distance = 4.0
+target_desired_distance = 4.0
+
+[node name="HurtboxComponent" parent="." index="9" unique_id=1083354207]
+can_receive_damage = false

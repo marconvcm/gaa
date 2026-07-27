@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://ddpbhl3ydqp88"]
+
+[ext_resource type="PackedScene" uid="uid://dwfr2ucs3bm4f" path="res://components/actor.tscn" id="1_actor"]
+[ext_resource type="Shader" uid="uid://7hya7hvp3f8j" path="res://shaders/sprite_shine.gdshader" id="2_spgjl"]
+[ext_resource type="Script" uid="uid://bqd5d8bqy5x5c" path="res://components/base/enemy_component.gd" id="3_enemy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hog6v"]
+resource_local_to_scene = true
+shader = ExtResource("2_spgjl")
+shader_parameter/is_shining = false
+shader_parameter/shine_frequency = 8.0
+
+[node name="Enemy" unique_id=378824115 instance=ExtResource("1_actor")]
+
+[node name="MoveComponent" parent="." index="0" unique_id=1240798177]
+movement_enabled = false
+
+[node name="KnockbackComponent" parent="." index="6"]
+deceleration = 1500.0
+
+[node name="Sprite" parent="." index="8" unique_id=277341190]
+modulate = Color(0.519594, 0.9903502, 0.7732215, 1)
+material = SubResource("ShaderMaterial_hog6v")
+
+[node name="EnemyComponent" type="Node" parent="." index="10" unique_id=1040154089]
+script = ExtResource("3_enemy")

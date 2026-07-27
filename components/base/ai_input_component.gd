@@ -1,0 +1,68 @@
+## Produz uma direção para perseguir um alvo ou seguir uma direção definida.
+class_name AIInputComponent
+extends InputComponent
+
+@export var target: Node2D
+@export_range(0.0, 1000.0, 1.0, "suffix:px") var stopping_distance := 4.0
+@export var patrol_offsets: Array[Vector2] = [Vector2(-40, 0), Vector2(40, 0)]
+@export_range(0.0, 10.0, 0.1, "suffix:s") var patrol_wait_time := 0.5
+
+## Útil para patrulhas e outros comportamentos que controlam a IA por código.
+var desired_direction := Vector2.ZERO
+
+var _actor: Node2D
+var _navigation_agent: NavigationAgent2D
+var _patrol_origin := Vector2.ZERO
+var _patrol_index := 0
+var _wait_remaining := 0.0
+
+
+func _ready() -> void:
+	_actor = get_parent() as Node2D
+	if _actor == null:
+		push_error("AIInputComponent precisa ser filho de um Node2D.")
+		set_physics_process(false)
+		return
+
+	_navigation_agent = _actor.get_node_or_null("NavigationAgent2D") as NavigationAgent2D
+	_patrol_origin = _actor.global_position
+
+
+func get_movement_direction() -> Vector2:
+	if is_instance_valid(target):
+		return _get_direction_to(target.global_position)
+
+	if not patrol_offsets.is_empty():
+		return _get_patrol_direction()
+
+	return desired_direction.limit_length(1.0)
+
+
+func _get_patrol_direction() -> Vector2:
+	if _wait_remaining > 0.0:
+		_wait_remaining -= get_physics_process_delta_time()
+		return Vector2.ZERO
+
+	var patrol_destination := _patrol_origin + patrol_offsets[_patrol_index]
+	if _actor.global_position.distance_to(patrol_destination) <= stopping_distance:
+		_patrol_index = wrapi(_patrol_index + 1, 0, patrol_offsets.size())
+		_wait_remaining = patrol_wait_time
+		return Vector2.ZERO
+
+	return _get_direction_to(patrol_destination)
+
+
+func _get_direction_to(destination: Vector2) -> Vector2:
+	if _actor.global_position.distance_to(destination) <= stopping_distance:
+		return Vector2.ZERO
+
+	if _navigation_agent != null:
+		_navigation_agent.target_position = destination
+		if not _navigation_agent.is_navigation_finished():
+			var next_path_position := _navigation_agent.get_next_path_position()
+			if not next_path_position.is_equal_approx(_actor.global_position):
+				return _actor.global_position.direction_to(next_path_position)
+
+	# A navegação pode levar um frame para sincronizar com o mapa. Enquanto isso,
+	# seguir diretamente mantém a patrulha funcional.
+	return _actor.global_position.direction_to(destination)

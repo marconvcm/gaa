@@ -1,0 +1,6 @@
+[export]
+format = png
+png_profile = pixel_art
+output_dir = .
+overwrite = false
+recursive = false

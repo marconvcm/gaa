@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://cmshjjkpmlxth"]
+
+[ext_resource type="PackedScene" uid="uid://dwfr2ucs3bm4f" path="res://components/actor.tscn" id="1_0g4kb"]
+[ext_resource type="Script" uid="uid://b3uxm67ujk17h" path="res://components/base/player_input_component.gd" id="2_51jd6"]
+[ext_resource type="Shader" uid="uid://7hya7hvp3f8j" path="res://shaders/sprite_shine.gdshader" id="3_5odhx"]
+[ext_resource type="Script" uid="uid://bldsgads3pk87" path="res://components/base/game_camera.gd" id="3_camera"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5odhx"]
+resource_local_to_scene = true
+shader = ExtResource("3_5odhx")
+shader_parameter/is_shining = false
+shader_parameter/shine_frequency = 8.0
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0g4kb"]
+size = Vector2(16, 16)
+
+[node name="Player" unique_id=1988717880 instance=ExtResource("1_0g4kb")]
+
+[node name="MoveComponent" parent="." index="0" unique_id=1240798177]
+speed = 96.0
+
+[node name="PlayerInputComponent" type="Node" parent="." index="1" unique_id=2012168173]
+script = ExtResource("2_51jd6")
+metadata/_custom_type_script = "uid://b3uxm67ujk17h"
+
+[node name="ShotComponent" parent="." index="3" unique_id=166561211]
+cooldown = 0.1
+
+[node name="Sprite" parent="." index="9" unique_id=277341190]
+modulate = Color(0.09101673, 0.5175702, 0.5869913, 1)
+material = SubResource("ShaderMaterial_5odhx")
+texture = SubResource("PlaceholderTexture2D_0g4kb")
+
+[node name="Camera" type="Camera2D" parent="." index="11" unique_id=463979637]
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.1
+drag_top_margin = 0.1
+script = ExtResource("3_camera")
+room_transition_lerp_speed = 16.0
