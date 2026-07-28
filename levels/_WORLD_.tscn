@@ -1,0 +1,48 @@
+[gd_scene format=4 uid="uid://dvbcqtuvrnx7p"]
+
+[ext_resource type="Script" uid="uid://cdji1iefvdd8r" path="res://levels/scripts/World.gd" id="1_5pvwi"]
+[ext_resource type="Texture2D" uid="uid://beesu80k5rqq6" path="res://assets/props.png" id="1_5rejw"]
+[ext_resource type="AudioStream" uid="uid://b4j5hyw3aer1k" path="res://assets/sfx/select.wav" id="3_vgxff"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5pvwi"]
+texture = ExtResource("1_5rejw")
+texture_region_size = Vector2i(24, 24)
+0:0/0 = 0
+0:0/0/custom_data_0 = "Missing"
+1:0/0 = 0
+1:0/0/custom_data_0 = "HPath"
+2:0/0 = 0
+2:0/0/custom_data_0 = "VPath"
+0:1/0 = 0
+0:1/0/custom_data_0 = "Current"
+1:1/0 = 0
+1:1/0/custom_data_0 = "Special"
+0:2/0 = 0
+0:2/0/custom_data_0 = "Clear"
+
+[sub_resource type="TileSet" id="TileSet_itad5"]
+tile_size = Vector2i(24, 24)
+custom_data_layer_0/name = "Kind"
+custom_data_layer_0/type = 4
+sources/1 = SubResource("TileSetAtlasSource_5pvwi")
+
+[node name="World" type="Node2D" unique_id=2126773236]
+script = ExtResource("1_5pvwi")
+movement_speed = 240.0
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1101459635]
+
+[node name="Map" type="TileMapLayer" parent="." unique_id=2111541459]
+tile_map_data = PackedByteArray("AAD4////AQABAAEAAAD5////AQABAAAAAAD6////AQABAAAAAAD7////AQABAAEAAAD+////AQABAAEAAAD+/wIAAQABAAEAAAABAAIAAQAAAAIAAAD+//z/AQAAAAIAAAABAPz/AQAAAAEAAAAEAPz/AQAAAAAAAAAEAP//AQAAAAAAAAD8////AQABAAAAAAD9////AQABAAAAAAD///z/AQABAAAAAAAAAPz/AQABAAAAAAACAPz/AQABAAAAAAADAPz/AQABAAAAAAD//wIAAQABAAAAAAAAAAIAAQABAAAAAAD+//7/AQACAAAAAAD+//3/AQACAAAAAAD+/wAAAQACAAAAAAD+/wEAAQACAAAAAAAEAP3/AQACAAAAAAAEAP7/AQACAAAAAAA=")
+tile_set = SubResource("TileSet_itad5")
+
+[node name="Player" type="Sprite2D" parent="." unique_id=837870700]
+position = Vector2(-192, -24)
+texture = ExtResource("1_5rejw")
+offset = Vector2(12, 3)
+region_enabled = true
+region_rect = Rect2(24, 48, 24, 24)
+
+[node name="GlobalSoundPlayer" type="AudioStreamPlayer" parent="." unique_id=687578065]
+stream = ExtResource("3_vgxff")
+pitch_scale = 2.0
