@@ -3,6 +3,8 @@
 [ext_resource type="TileSet" uid="uid://ckxenh84uds3i" path="res://resources/tilesets/blockout.tres" id="1_uuvtt"]
 [ext_resource type="PackedScene" uid="uid://cmshjjkpmlxth" path="res://components/player.tscn" id="2_m4cqy"]
 [ext_resource type="PackedScene" uid="uid://ddpbhl3ydqp88" path="res://components/enemy.tscn" id="3_n1nqo"]
+[ext_resource type="PackedScene" uid="uid://dfq6g8yt1dxeu" path="res://components/hud/HUD.tscn" id="4_hud"]
+[ext_resource type="PackedScene" uid="uid://bhkvn2lw8ol7c" path="res://components/collectable.tscn" id="5_i8ko7"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_8nj6h"]
 vertices = PackedVector2Array(-32, -32, 512, -32, 512, 302, -32, 302)
@@ -110,3 +112,8 @@ position = Vector2(1200, 90)
 
 [node name="Enemy4" parent="." unique_id=216458406 instance=ExtResource("3_n1nqo")]
 position = Vector2(1200, 180)
+
+[node name="HUD" parent="." unique_id=141513722 instance=ExtResource("4_hud")]
+
+[node name="CollectableObject" parent="." unique_id=1961004010 instance=ExtResource("5_i8ko7")]
+position = Vector2(168, 120)

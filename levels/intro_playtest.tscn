@@ -1,0 +1,128 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://levels/scripts/intro_playtest.gd" id="1_script"]
+[ext_resource type="LabelSettings" path="res://resources/label_settings/intro_title.tres" id="2_title"]
+[ext_resource type="LabelSettings" path="res://resources/label_settings/intro_header.tres" id="3_header"]
+[ext_resource type="LabelSettings" path="res://resources/label_settings/intro_body.tres" id="4_body"]
+[ext_resource type="LabelSettings" path="res://resources/label_settings/intro_prompt.tres" id="5_prompt"]
+
+[node name="IntroPlaytest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.07, 0.1, 0.17, 1)
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_top = 12.0
+offset_right = 480.0
+offset_bottom = 42.0
+label_settings = ExtResource("2_title")
+text = "GAUCHO & ALIENS"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 0
+offset_top = 46.0
+offset_right = 480.0
+offset_bottom = 60.0
+label_settings = ExtResource("4_body")
+text = "CONTROLES DO PLAYTEST"
+horizontal_alignment = 1
+
+[node name="KeyboardPanel" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 72.0
+offset_right = 232.0
+offset_bottom = 190.0
+color = Color(0.12, 0.17, 0.27, 1)
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="KeyboardPanel"]
+layout_mode = 0
+offset_top = 8.0
+offset_right = 216.0
+offset_bottom = 30.0
+label_settings = ExtResource("3_header")
+text = "TECLADO"
+horizontal_alignment = 1
+
+[node name="Actions" type="Label" parent="KeyboardPanel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 38.0
+offset_right = 208.0
+offset_bottom = 108.0
+label_settings = ExtResource("4_body")
+text = "[W A S D / SETAS] : MOVER\n\n[ESPACO] : ATIRAR\n\n[F] : ATAQUE CORPO A CORPO\n\n[Q / E] : TROCAR ARMA\n\n[R] : RECARREGAR"
+
+[node name="ControllerPanel" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 72.0
+offset_right = 464.0
+offset_bottom = 190.0
+color = Color(0.12, 0.17, 0.27, 1)
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="ControllerPanel"]
+layout_mode = 0
+offset_top = 8.0
+offset_right = 216.0
+offset_bottom = 30.0
+label_settings = ExtResource("3_header")
+text = "CONTROLE"
+horizontal_alignment = 1
+
+[node name="Actions" type="Label" parent="ControllerPanel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 38.0
+offset_right = 208.0
+offset_bottom = 108.0
+label_settings = ExtResource("4_body")
+text = "[D-PAD / ANALOGICO] : MOVER\n\n[A (XBOX) / X (PS)] : ATIRAR\n\n[X (XBOX) / QUADRADO (PS)] : ATAQUE\n\n[LB / RB] : TROCAR ARMA\n\n[Y (XBOX) / TRIANGULO (PS)] : RECARREGAR"
+
+[node name="Prompt" type="Label" parent="."]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 226.0
+offset_right = 464.0
+offset_bottom = 246.0
+label_settings = ExtResource("5_prompt")
+text = "[ESPACO] OU [A / X] PARA COMECAR"
+horizontal_alignment = 1
+
+[node name="HealthTip" type="Label" parent="."]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 202.0
+offset_right = 464.0
+offset_bottom = 216.0
+label_settings = ExtResource("4_body")
+text = "BARRA VERDE NO CANTO SUPERIOR: SUA VIDA"
+horizontal_alignment = 1
+
+[node name="FadeOverlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+mouse_filter = 2

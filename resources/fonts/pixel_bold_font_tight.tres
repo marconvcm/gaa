@@ -1,0 +1,6 @@
+[gd_resource type="FontVariation" format=3 uid="uid://cv321wplcvtgj"]
+
+[ext_resource type="FontFile" uid="uid://caijvaf5javit" path="res://assets/fonts/pixel_bold_font.ttf" id="1_pixel_bold"]
+
+[resource]
+base_font = ExtResource("1_pixel_bold")

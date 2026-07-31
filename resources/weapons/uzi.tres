@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponResource" format=3 uid="uid://ocqti1sxxid6"]
+
+[ext_resource type="Script" uid="uid://dcqfyayivwa3j" path="res://components/base/weapon_resource.gd" id="1_weapon"]
+
+[resource]
+resource_name = "Uzi"
+script = ExtResource("1_weapon")
+weapon_id = &"uzi"
+ammo_capacity = 180
+clip_size = 32
+reload_duration = 1.1
+automatic_fire = true
+fire_rate = 14.0
+projectile_speed = 360.0
+knockback_force = 90.0

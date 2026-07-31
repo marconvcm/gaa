@@ -5,6 +5,7 @@ extends Node
 @export_range(0.0, 5000.0, 1.0, "suffix:px/s") var speed := 160.0
 @export var use_eight_direction_movement := true
 @export var movement_enabled := true
+@export var limit_to_current_room := false
 @export var input_component: InputComponent
 
 var _body: CharacterBody2D
@@ -48,7 +49,10 @@ func _physics_process(_delta: float) -> void:
 		facing_direction = _snap_to_eight_directions(movement_direction)
 		if use_eight_direction_movement:
 			movement_direction = facing_direction
-	_body.velocity = movement_direction * speed
+	var next_velocity := movement_direction * speed
+	if limit_to_current_room and not RoomManager.is_position_inside_current_room(_body.global_position + next_velocity * _delta):
+		next_velocity = Vector2.ZERO
+	_body.velocity = next_velocity
 	_body.move_and_slide()
 
 

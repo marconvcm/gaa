@@ -3,6 +3,7 @@ class_name KnockbackComponent
 extends Node
 
 @export_range(0.0, 5000.0, 1.0, "suffix:px/s²") var deceleration := 900.0
+@export var limit_to_current_room := false
 
 var _body: CharacterBody2D
 var _velocity := Vector2.ZERO
@@ -42,6 +43,10 @@ func move(delta: float) -> void:
 	if _body == null:
 		return
 
-	_body.velocity = _velocity
+	var next_velocity := _velocity
+	if limit_to_current_room and not RoomManager.is_position_inside_current_room(_body.global_position + next_velocity * delta):
+		next_velocity = Vector2.ZERO
+		_velocity = Vector2.ZERO
+	_body.velocity = next_velocity
 	_body.move_and_slide()
 	_velocity = _velocity.move_toward(Vector2.ZERO, deceleration * delta)

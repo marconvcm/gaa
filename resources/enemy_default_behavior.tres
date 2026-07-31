@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EnemyBehaviorResource" format=3 uid="uid://bqpu53d5lxb3t"]
+
+[ext_resource type="Script" uid="uid://dh4vb16utwe86" path="res://components/base/enemy_behavior_resource.gd" id="1_behavior"]
+
+[resource]
+resource_name = "EnemyDefaultBehavior"
+script = ExtResource("1_behavior")
+hit_stun_duration = 0.5

@@ -12,11 +12,13 @@ extends Node2D
 @export var health_bar_size := Vector2(24, 4)
 @export var health_bar_offset := Vector2(0, -18)
 @export var debug_color := Color("f7d74d")
+@export var show_enemy_perception := true
 
 var _body: CharacterBody2D
 var _move_component: MoveComponent
 var _melee_component: MeleeComponent
 var _hp_component: HPComponent
+var _enemy_brain_component: EnemyBrainComponent
 
 
 func _ready() -> void:
@@ -28,6 +30,7 @@ func _ready() -> void:
 	_move_component = _body.get_node_or_null("MoveComponent") as MoveComponent
 	_melee_component = _body.get_node_or_null("MeleeComponent") as MeleeComponent
 	_hp_component = _body.get_node_or_null("HPComponent") as HPComponent
+	_enemy_brain_component = _body.get_node_or_null("EnemyBrainComponent") as EnemyBrainComponent
 
 	if show_only_in_debug_builds and not OS.has_feature("debug"):
 		visible = false
@@ -50,6 +53,7 @@ func _draw() -> void:
 	_draw_facing_point()
 	_draw_active_melee_hitbox()
 	_draw_health_bar()
+	_draw_enemy_perception()
 
 	if not _body.velocity.is_zero_approx():
 		var velocity_line := _body.velocity.limit_length(max_velocity_line_length)
@@ -94,3 +98,47 @@ func _draw_health_bar() -> void:
 	var fill_rect := Rect2(bar_position + Vector2.ONE, fill_size)
 	draw_rect(fill_rect, Color("63d471"))
 	draw_rect(bar_rect, Color.WHITE, false, 1.0)
+
+
+func _draw_enemy_perception() -> void:
+	if not show_enemy_perception or _enemy_brain_component == null or _move_component == null:
+		return
+
+	var facing_angle := _move_component.facing_direction.angle()
+	var half_field_of_view := deg_to_rad(_enemy_brain_component.field_of_view * 0.5)
+	var perception_color := _get_enemy_state_color()
+	var perception_radius := _enemy_brain_component.perception_radius
+	var cone_points := PackedVector2Array([Vector2.ZERO])
+	for point_index in range(17):
+		var ratio := float(point_index) / 16.0
+		var angle := facing_angle + lerpf(-half_field_of_view, half_field_of_view, ratio)
+		cone_points.append(Vector2.RIGHT.rotated(angle) * perception_radius)
+
+	draw_colored_polygon(cone_points, Color(perception_color, 0.12))
+	draw_arc(Vector2.ZERO, perception_radius, facing_angle - half_field_of_view, facing_angle + half_field_of_view, 16, perception_color, 1.0)
+	draw_line(Vector2.ZERO, cone_points[1], perception_color, 1.0)
+	draw_line(Vector2.ZERO, cone_points[-1], perception_color, 1.0)
+
+	var target_position := _enemy_brain_component.get_last_known_target_position()
+	var target_visible := _enemy_brain_component.is_target_visible()
+	if target_visible and is_instance_valid(_enemy_brain_component.target):
+		target_position = _enemy_brain_component.target.global_position
+	if not target_position.is_zero_approx():
+		var local_target_position := to_local(target_position)
+		var sight_color := Color("70ff8a") if target_visible else Color("ffb347")
+		draw_line(Vector2.ZERO, local_target_position, sight_color, 1.0)
+		draw_circle(local_target_position, 3.0, sight_color)
+
+
+func _get_enemy_state_color() -> Color:
+	match _enemy_brain_component.state:
+		EnemyBrainComponent.State.CHASE:
+			return Color("ffcf5c")
+		EnemyBrainComponent.State.ATTACK:
+			return Color("ff5f5f")
+		EnemyBrainComponent.State.INVESTIGATE:
+			return Color("a98bff")
+		EnemyBrainComponent.State.STUNNED:
+			return Color("f2f2f2")
+		_:
+			return Color("70b7ff")

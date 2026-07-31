@@ -18,6 +18,7 @@ static func create(
 	source: Node2D,
 	spawn_position: Vector2,
 	projectile_direction: Vector2,
+	projectile_speed: float,
 	projectile_damage: int,
 	projectile_knockback_force: float,
 ) -> ProjectileObject:
@@ -25,6 +26,7 @@ static func create(
 	projectile.source_actor = source
 	projectile.global_position = spawn_position
 	projectile.direction = projectile_direction.normalized()
+	projectile.speed = projectile_speed
 	projectile.damage = projectile_damage
 	projectile.knockback_force = projectile_knockback_force
 	return projectile

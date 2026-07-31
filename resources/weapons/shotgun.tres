@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponResource" format=3 uid="uid://d2p5isds5peb3"]
+
+[ext_resource type="Script" uid="uid://dcqfyayivwa3j" path="res://components/base/weapon_resource.gd" id="1_weapon"]
+
+[resource]
+resource_name = "Shotgun"
+script = ExtResource("1_weapon")
+weapon_id = &"shotgun"
+ammo_capacity = 32
+clip_size = 6
+reload_duration = 1.8
+fire_rate = 1.0
+projectile_speed = 350.0
+projectile_count = 8
+spread_degrees = 30.0
+knockback_force = 350.0

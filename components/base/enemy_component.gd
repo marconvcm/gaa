@@ -8,6 +8,7 @@ var _actor: Node2D
 var _hp_component: HPComponent
 var _knockback_component: KnockbackComponent
 var _sprite: Sprite2D
+var _enemy_brain_component: EnemyBrainComponent
 var _flash_id := 0
 
 
@@ -16,15 +17,18 @@ func _ready() -> void:
 	_hp_component = _actor.get_node_or_null("HPComponent") as HPComponent
 	_knockback_component = _actor.get_node_or_null("KnockbackComponent") as KnockbackComponent
 	_sprite = _actor.get_node_or_null("Sprite") as Sprite2D
+	_enemy_brain_component = _actor.get_node_or_null("EnemyBrainComponent") as EnemyBrainComponent
 
 	if _hp_component != null:
 		_hp_component.hit_received.connect(_on_hit_received)
-		_hp_component.died.connect(_on_died)
 
 
 func _on_hit_received(hitbox: HitboxComponent) -> void:
 	if _knockback_component != null:
 		_knockback_component.apply_from(_get_attacker_center(hitbox), hitbox.knockback_force)
+	if _enemy_brain_component != null:
+		_enemy_brain_component.alert(hitbox.get_actor(), _get_attacker_center(hitbox))
+		_enemy_brain_component.stun()
 	_start_hit_flash()
 
 
@@ -33,10 +37,6 @@ func _get_attacker_center(hitbox: HitboxComponent) -> Vector2:
 	if is_instance_valid(attacker):
 		return attacker.global_position
 	return hitbox.global_position
-
-
-func _on_died() -> void:
-	_actor.queue_free()
 
 
 func _start_hit_flash() -> void:

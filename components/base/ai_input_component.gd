@@ -15,6 +15,7 @@ var _navigation_agent: NavigationAgent2D
 var _patrol_origin := Vector2.ZERO
 var _patrol_index := 0
 var _wait_remaining := 0.0
+var _external_movement_enabled := false
 
 
 func _ready() -> void:
@@ -29,6 +30,9 @@ func _ready() -> void:
 
 
 func get_movement_direction() -> Vector2:
+	if _external_movement_enabled:
+		return desired_direction.limit_length(1.0)
+
 	if is_instance_valid(target):
 		return _get_direction_to(target.global_position)
 
@@ -36,6 +40,22 @@ func get_movement_direction() -> Vector2:
 		return _get_patrol_direction()
 
 	return desired_direction.limit_length(1.0)
+
+
+## Permite que uma máquina de estados controle temporariamente o deslocamento.
+## Enquanto ativo, a patrulha e o alvo exportado não interferem na direção.
+func set_external_movement_direction(direction: Vector2) -> void:
+	_external_movement_enabled = true
+	desired_direction = direction.limit_length(1.0)
+
+
+func resume_autonomous_movement() -> void:
+	_external_movement_enabled = false
+
+
+## Retorna uma direção que respeita o NavigationAgent2D quando disponível.
+func get_direction_to(destination: Vector2) -> Vector2:
+	return _get_direction_to(destination)
 
 
 func _get_patrol_direction() -> Vector2:
@@ -58,11 +78,14 @@ func _get_direction_to(destination: Vector2) -> Vector2:
 
 	if _navigation_agent != null:
 		_navigation_agent.target_position = destination
-		if not _navigation_agent.is_navigation_finished():
+		var navigation_map := _navigation_agent.get_navigation_map()
+		var navigation_is_ready := navigation_map.is_valid() and NavigationServer2D.map_get_iteration_id(navigation_map) > 0
+		if navigation_is_ready and not _navigation_agent.is_navigation_finished():
 			var next_path_position := _navigation_agent.get_next_path_position()
 			if not next_path_position.is_equal_approx(_actor.global_position):
 				return _actor.global_position.direction_to(next_path_position)
 
-	# A navegação pode levar um frame para sincronizar com o mapa. Enquanto isso,
-	# seguir diretamente mantém a patrulha funcional.
+	# Antes de o NavigationRegion2D sincronizar, o agente pode expor um ponto de
+	# caminho obsoleto. Seguir diretamente evita que a entidade saia em uma
+	# direção arbitrária no primeiro contato com o alvo.
 	return _actor.global_position.direction_to(destination)

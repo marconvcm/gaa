@@ -3,16 +3,19 @@ class_name ShotComponent
 extends Node
 
 signal projectile_fired(projectile: ProjectileObject)
+signal weapon_changed(weapon: WeaponResource)
 
-@export_range(0.0, 10.0, 0.01, "suffix:s") var cooldown := 0.25
-@export_range(0.0, 256.0, 1.0, "suffix:px") var spawn_distance := 12.0
-@export_range(0, 9999, 1) var damage := 1
-@export_range(0.0, 5000.0, 1.0, "suffix:px/s") var knockback_force := 120.0
+@export var weapons: Array[WeaponResource] = []
+@export var current_weapon_index := 0
+
+var weapon: WeaponResource
 
 var _actor: Node2D
 var _input_component: InputComponent
 var _move_component: MoveComponent
 var _cooldown_remaining := 0.0
+var can_shoot_callback: Callable
+var shot_fired_callback: Callable
 
 
 func _ready() -> void:
@@ -24,16 +27,32 @@ func _ready() -> void:
 
 	_input_component = _find_input_component()
 	_move_component = _actor.get_node_or_null("MoveComponent") as MoveComponent
+	if weapons.is_empty():
+		weapons.append(WeaponResource.new())
+	current_weapon_index = posmod(current_weapon_index, weapons.size())
+	weapon = weapons[current_weapon_index]
 
 
 func _physics_process(delta: float) -> void:
 	_cooldown_remaining = maxf(_cooldown_remaining - delta, 0.0)
-	if _input_component != null and _input_component.is_shoot_requested():
+	if _input_component == null:
+		return
+
+	if _input_component.is_previous_weapon_requested():
+		_select_weapon(-1)
+	elif _input_component.is_next_weapon_requested():
+		_select_weapon(1)
+
+	if weapon.automatic_fire and _input_component.is_shoot_held():
+		shoot()
+	elif not weapon.automatic_fire and _input_component.is_shoot_requested():
 		shoot()
 
 
 func shoot(direction := Vector2.ZERO) -> ProjectileObject:
 	if _cooldown_remaining > 0.0:
+		return null
+	if can_shoot_callback.is_valid() and not can_shoot_callback.call(weapon):
 		return null
 
 	var shot_direction := direction
@@ -43,18 +62,41 @@ func shoot(direction := Vector2.ZERO) -> ProjectileObject:
 		shot_direction = Vector2.DOWN
 
 	var normalized_direction := shot_direction.normalized()
-	var projectile := ProjectileObject.create(
-		_actor,
-		_actor.global_position + normalized_direction * spawn_distance,
-		normalized_direction,
-		damage,
-		knockback_force,
-	)
-	get_tree().current_scene.add_child(projectile)
+	var first_projectile: ProjectileObject
+	for projectile_index in weapon.projectile_count:
+		var projectile_direction := normalized_direction.rotated(_get_spread_angle(projectile_index))
+		var projectile := ProjectileObject.create(
+			_actor,
+			_actor.global_position + projectile_direction * weapon.spawn_distance,
+			projectile_direction,
+			weapon.projectile_speed,
+			weapon.damage,
+			weapon.knockback_force,
+		)
+		get_tree().current_scene.add_child(projectile)
+		if first_projectile == null:
+			first_projectile = projectile
+		projectile_fired.emit(projectile)
 
-	_cooldown_remaining = cooldown
-	projectile_fired.emit(projectile)
-	return projectile
+	_cooldown_remaining = 1.0 / maxf(weapon.fire_rate, 0.1)
+	if shot_fired_callback.is_valid():
+		shot_fired_callback.call(weapon)
+	return first_projectile
+
+
+func _get_spread_angle(projectile_index: int) -> float:
+	if weapon.projectile_count <= 1:
+		return 0.0
+
+	var spread_radians := deg_to_rad(weapon.spread_degrees)
+	var spread_progress := float(projectile_index) / float(weapon.projectile_count - 1)
+	return lerpf(-spread_radians * 0.5, spread_radians * 0.5, spread_progress)
+
+
+func _select_weapon(index_change: int) -> void:
+	current_weapon_index = posmod(current_weapon_index + index_change, weapons.size())
+	weapon = weapons[current_weapon_index]
+	weapon_changed.emit(weapon)
 
 
 func _find_input_component() -> InputComponent:

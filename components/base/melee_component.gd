@@ -61,15 +61,17 @@ func attack(direction := Vector2.ZERO) -> HitboxComponent:
 
 	_cooldown_remaining = cooldown
 	attack_started.emit(hitbox)
-	get_tree().create_timer(active_time).timeout.connect(_finish_attack.bind(hitbox))
+	get_tree().create_timer(active_time).timeout.connect(_finish_attack)
 	return hitbox
 
 
-func _finish_attack(hitbox: HitboxComponent) -> void:
-	if active_hitbox == hitbox:
+func _finish_attack() -> void:
+	if not is_instance_valid(active_hitbox):
 		active_hitbox = null
-	if is_instance_valid(hitbox):
-		hitbox.queue_free()
+		return
+
+	active_hitbox.queue_free()
+	active_hitbox = null
 
 
 func is_attacking() -> bool:

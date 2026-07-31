@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponResource" format=3 uid="uid://0al3r07e24xa"]
+
+[ext_resource type="Script" uid="uid://dcqfyayivwa3j" path="res://components/base/weapon_resource.gd" id="1_weapon"]
+
+[resource]
+resource_name = "Rifle"
+script = ExtResource("1_weapon")
+weapon_id = &"rifle"
+ammo_capacity = 120
+clip_size = 30
+reload_duration = 1.4
+automatic_fire = true
+fire_rate = 8.0
+projectile_speed = 480.0
+damage = 2
+knockback_force = 140.0

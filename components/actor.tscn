@@ -9,6 +9,10 @@
 [ext_resource type="Script" uid="uid://q8bkecjuhmdh" path="res://components/base/hp_component.gd" id="7_hp"]
 [ext_resource type="Script" uid="uid://itf8uevu8koi" path="res://components/base/active_value.gd" id="8_active_value"]
 [ext_resource type="Script" uid="uid://dby2tnx31bqho" path="res://components/base/knockback_component.gd" id="9_knockback"]
+[ext_resource type="Script" uid="uid://1iqp78ble28k" path="res://components/base/death_component.gd" id="10_death"]
+[ext_resource type="Script" uid="uid://d3q1wk0lmuhc" path="res://components/base/sfx_player_component.gd" id="11_sfx"]
+[ext_resource type="AudioStream" uid="uid://g368enthjbuu" path="res://assets/sfx/slash.wav" id="12_slash"]
+[ext_resource type="AudioStream" uid="uid://161sw5nll44e" path="res://assets/sfx/shoot.wav" id="13_shoot"]
 
 [sub_resource type="Animation" id="Animation_melee_attack"]
 resource_name = "melee_attack"
@@ -36,6 +40,10 @@ resource_local_to_scene = true
 shader = ExtResource("6_shine_shader")
 shader_parameter/is_shining = false
 shader_parameter/shine_frequency = 8.0
+shader_parameter/is_dissolving = false
+shader_parameter/dissolve_progress = 0.0
+shader_parameter/dissolve_edge_width = 0.08
+shader_parameter/dissolve_edge_color = Color(1, 0.82, 0.4, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kj1b4"]
 size = Vector2(16, 16)
@@ -86,3 +94,21 @@ texture = SubResource("PlaceholderTexture2D_kj1b4")
 
 [node name="Collision" type="CollisionShape2D" parent="." unique_id=935029686]
 shape = SubResource("RectangleShape2D_ails4")
+
+[node name="DeathComponent" type="Node" parent="." unique_id=433792714]
+script = ExtResource("10_death")
+dissolve_duration = 0.5
+dissolve_edge_color = Color(1, 0.4166667, 0, 1)
+
+[node name="MeleeSFXPlayerComponent" type="AudioStreamPlayer" parent="." unique_id=121945196]
+stream = ExtResource("12_slash")
+pitch_scale = 2.0
+script = ExtResource("11_sfx")
+event_source_path = NodePath("../MeleeComponent")
+event_signal = &"attack_started"
+
+[node name="ShotSFXPlayerComponent" type="AudioStreamPlayer" parent="." unique_id=137034102]
+stream = ExtResource("13_shoot")
+script = ExtResource("11_sfx")
+event_source_path = NodePath("../ShotComponent")
+event_signal = &"projectile_fired"

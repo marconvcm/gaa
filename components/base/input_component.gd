@@ -15,5 +15,21 @@ func is_shoot_requested() -> bool:
 	return false
 
 
+func is_shoot_held() -> bool:
+	return false
+
+
 func is_melee_requested() -> bool:
+	return false
+
+
+func is_previous_weapon_requested() -> bool:
+	return false
+
+
+func is_next_weapon_requested() -> bool:
+	return false
+
+
+func is_reload_requested() -> bool:
 	return false

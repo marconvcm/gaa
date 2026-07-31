@@ -1,0 +1,81 @@
+[gd_scene load_steps=5 format=3 uid="uid://dfq6g8yt1dxeu"]
+
+[ext_resource type="Script" uid="uid://b4rt8xauhk57j" path="res://components/hud/HUD.gd" id="1_hud"]
+[ext_resource type="Script" path="res://components/hud/game_over_component.gd" id="2_game_over"]
+[ext_resource type="LabelSettings" path="res://resources/label_settings/game_over_title.tres" id="3_title"]
+[ext_resource type="LabelSettings" path="res://resources/label_settings/game_over_hint.tres" id="4_hint"]
+[ext_resource type="LabelSettings" path="res://resources/label_settings/hud_weapon.tres" id="5_weapon"]
+
+[node name="HUD" type="CanvasLayer" unique_id=959627103]
+
+[node name="Control" type="Control" parent="." unique_id=1303619716]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_hud")
+
+[node name="WeaponLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 22.0
+offset_right = 160.0
+offset_bottom = 36.0
+label_settings = ExtResource("5_weapon")
+text = "ARMA: ---"
+
+[node name="ClipLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 34.0
+offset_right = 160.0
+offset_bottom = 48.0
+label_settings = ExtResource("5_weapon")
+text = "PENTE: ---"
+
+[node name="ReserveLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 46.0
+offset_right = 160.0
+offset_bottom = 60.0
+label_settings = ExtResource("5_weapon")
+text = "RESERVA: ---"
+
+[node name="GameOverOverlay" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+mouse_filter = 2
+visible = false
+
+[node name="GameOverTitle" type="Label" parent="Control"]
+layout_mode = 0
+offset_top = 102.0
+offset_right = 480.0
+offset_bottom = 132.0
+label_settings = ExtResource("3_title")
+text = "FIM DE JOGO"
+horizontal_alignment = 1
+visible = false
+
+[node name="GameOverHint" type="Label" parent="Control"]
+layout_mode = 0
+offset_top = 144.0
+offset_right = 480.0
+offset_bottom = 158.0
+label_settings = ExtResource("4_hint")
+text = "VOLTANDO AO INICIO..."
+horizontal_alignment = 1
+visible = false
+
+[node name="GameOverComponent" type="Node" parent="Control"]
+script = ExtResource("2_game_over")
+death_visual_delay = 1.0

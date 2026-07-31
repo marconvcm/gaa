@@ -4,15 +4,31 @@
 [ext_resource type="Script" uid="uid://b3uxm67ujk17h" path="res://components/base/player_input_component.gd" id="2_51jd6"]
 [ext_resource type="Shader" uid="uid://7hya7hvp3f8j" path="res://shaders/sprite_shine.gdshader" id="3_5odhx"]
 [ext_resource type="Script" uid="uid://bldsgads3pk87" path="res://components/base/game_camera.gd" id="3_camera"]
+[ext_resource type="Script" uid="uid://dcqfyayivwa3j" path="res://components/base/weapon_resource.gd" id="3_eju5v"]
 [ext_resource type="Texture2D" uid="uid://ccljqplhe35xp" path="res://assets/dummy-char.png" id="4_1kub6"]
+[ext_resource type="Script" uid="uid://d3q1wk0lmuhc" path="res://components/base/sfx_player_component.gd" id="5_sfx"]
+[ext_resource type="AudioStream" uid="uid://cllo2xb3xus6g" path="res://assets/sfx/die.mp3" id="6_die"]
+[ext_resource type="Resource" path="res://resources/weapons/pistol.tres" id="7_pistol"]
+[ext_resource type="Resource" path="res://resources/weapons/rifle.tres" id="8_rifle"]
+[ext_resource type="Resource" path="res://resources/weapons/shotgun.tres" id="9_shotgun"]
+[ext_resource type="Resource" path="res://resources/weapons/uzi.tres" id="10_uzi"]
+[ext_resource type="Script" path="res://components/base/collectable_attraction_component.gd" id="11_attraction"]
+[ext_resource type="Script" path="res://components/base/player_controller_component.gd" id="12_controller"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1kub6"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ta67"]
 resource_local_to_scene = true
 shader = ExtResource("3_5odhx")
 shader_parameter/is_shining = false
 shader_parameter/shine_frequency = 8.0
+shader_parameter/is_dissolving = false
+shader_parameter/dissolve_progress = 0.0
+shader_parameter/dissolve_edge_width = 0.08
+shader_parameter/dissolve_edge_color = Color(1, 0.82, 0.4, 1)
 
-[node name="Player" unique_id=1988717880 instance=ExtResource("1_0g4kb")]
+[sub_resource type="CircleShape2D" id="CircleShape2D_collectable_attraction"]
+radius = 32.0
+
+[node name="Player" unique_id=1988717880 groups=["player"] instance=ExtResource("1_0g4kb")]
 
 [node name="MoveComponent" parent="." index="0" unique_id=1240798177]
 speed = 96.0
@@ -21,14 +37,30 @@ speed = 96.0
 script = ExtResource("2_51jd6")
 metadata/_custom_type_script = "uid://b3uxm67ujk17h"
 
-[node name="ShotComponent" parent="." index="3" unique_id=166561211]
-cooldown = 0.1
+[node name="PlayerControllerComponent" type="Node" parent="."]
+script = ExtResource("12_controller")
 
-[node name="CollisionShape2D" parent="HurtboxComponent" parent_id_path=PackedInt32Array(1083354207) index="0" unique_id=1419816795]
+[node name="ShotComponent" parent="." index="3" unique_id=166561211]
+weapons = Array[ExtResource("3_eju5v")]([ExtResource("7_pistol"), ExtResource("8_rifle"), ExtResource("9_shotgun"), ExtResource("10_uzi")])
+current_weapon_index = 2
+
+[node name="MeleeComponent" parent="." index="4" unique_id=1321547249]
+hitbox_size = Vector2(32, 32)
+
+[node name="CollectableAttractionComponent" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("11_attraction")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollectableAttractionComponent"]
+shape = SubResource("CircleShape2D_collectable_attraction")
+
+[node name="Shape" parent="HurtboxComponent" parent_id_path=PackedInt32Array(1083354207) index="0" unique_id=1419816795]
 polygon = PackedVector2Array(-11, -32, 11, -32, 11, 8, -11, 8)
 
 [node name="Sprite" parent="." index="9" unique_id=277341190]
-material = SubResource("ShaderMaterial_1kub6")
+material = SubResource("ShaderMaterial_7ta67")
 texture = ExtResource("4_1kub6")
 offset = Vector2(0, -20)
 region_enabled = true
@@ -42,3 +74,13 @@ drag_left_margin = 0.1
 drag_top_margin = 0.1
 script = ExtResource("3_camera")
 room_transition_lerp_speed = 16.0
+
+[node name="DeathComponent" parent="." index="12" unique_id=433792714]
+remove_actor_on_death = false
+
+[node name="DeathSFXPlayerComponent" type="AudioStreamPlayer" parent="." index="15" unique_id=1671617238]
+stream = ExtResource("6_die")
+pitch_scale = 1.5
+script = ExtResource("5_sfx")
+event_source_path = NodePath("../DeathComponent")
+event_signal = &"death_started"
