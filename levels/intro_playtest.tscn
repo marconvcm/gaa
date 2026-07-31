@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://levels/scripts/intro_playtest.gd" id="1_script"]
 [ext_resource type="LabelSettings" path="res://resources/label_settings/intro_title.tres" id="2_title"]
 [ext_resource type="LabelSettings" path="res://resources/label_settings/intro_header.tres" id="3_header"]
 [ext_resource type="LabelSettings" path="res://resources/label_settings/intro_body.tres" id="4_body"]
 [ext_resource type="LabelSettings" path="res://resources/label_settings/intro_prompt.tres" id="5_prompt"]
+[ext_resource type="PackedScene" path="res://components/osc/on_screen_controller.tscn" id="6_osc"]
 
 [node name="IntroPlaytest" type="Control"]
 layout_mode = 3
@@ -126,3 +127,5 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0)
 mouse_filter = 2
+
+[node name="OnScreenControllerLayer" parent="." instance=ExtResource("6_osc")]

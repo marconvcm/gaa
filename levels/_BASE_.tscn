@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://ddpbhl3ydqp88" path="res://components/enemy.tscn" id="3_n1nqo"]
 [ext_resource type="PackedScene" uid="uid://dfq6g8yt1dxeu" path="res://components/hud/HUD.tscn" id="4_hud"]
 [ext_resource type="PackedScene" uid="uid://bhkvn2lw8ol7c" path="res://components/collectable.tscn" id="5_i8ko7"]
+[ext_resource type="PackedScene" path="res://components/osc/on_screen_controller.tscn" id="6_osc"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_8nj6h"]
 vertices = PackedVector2Array(-32, -32, 512, -32, 512, 302, -32, 302)
@@ -114,6 +115,8 @@ position = Vector2(1200, 90)
 position = Vector2(1200, 180)
 
 [node name="HUD" parent="." unique_id=141513722 instance=ExtResource("4_hud")]
+
+[node name="OnScreenControllerLayer" parent="." instance=ExtResource("6_osc")]
 
 [node name="CollectableObject" parent="." unique_id=1961004010 instance=ExtResource("5_i8ko7")]
 position = Vector2(168, 120)
