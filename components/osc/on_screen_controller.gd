@@ -5,6 +5,8 @@ extends Control
 const JOYSTICK_RADIUS := 34.0
 const JOYSTICK_KNOB_RADIUS := 13.0
 const BUTTON_RADIUS := 20.0
+const WEAPON_BUTTON_RADIUS := 13.0
+const WEAPON_BUTTON_COUNT := 4
 const BUTTON_BORDER_WIDTH := 2.0
 const CONTROL_COLOR := Color(1.0, 1.0, 1.0, 0.8)
 const PRESSED_CONTROL_COLOR := Color(1.0, 1.0, 1.0, 1.0)
@@ -19,6 +21,7 @@ const MELEE_ACTION: StringName = &"melee"
 var _joystick_touch_index := -1
 var _joystick_offset := Vector2.ZERO
 var _button_touches: Dictionary = {}
+var _weapon_button_touches: Dictionary = {}
 
 
 func _ready() -> void:
@@ -47,6 +50,13 @@ func _draw() -> void:
 		var color := PRESSED_CONTROL_COLOR if _button_touches.has(action) else CONTROL_COLOR
 		draw_arc(_get_button_center(action), BUTTON_RADIUS, 0.0, TAU, 24, color, BUTTON_BORDER_WIDTH, true)
 
+	var font := get_theme_default_font()
+	for weapon_index in WEAPON_BUTTON_COUNT:
+		var color := PRESSED_CONTROL_COLOR if _weapon_button_touches.has(weapon_index) else CONTROL_COLOR
+		var center := _get_weapon_button_center(weapon_index)
+		draw_arc(center, WEAPON_BUTTON_RADIUS, 0.0, TAU, 16, color, BUTTON_BORDER_WIDTH, true)
+		draw_string(font, center + Vector2(-3.0, 4.0), str(weapon_index + 1), HORIZONTAL_ALIGNMENT_LEFT, -1.0, 10, color)
+
 
 func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 	if event.pressed:
@@ -60,6 +70,14 @@ func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 			if _is_inside_button(event.position, action) and not _button_touches.has(action):
 				_button_touches[action] = event.index
 				Input.action_press(action)
+				queue_redraw()
+				accept_event()
+				return
+
+		for weapon_index in WEAPON_BUTTON_COUNT:
+			if _is_inside_weapon_button(event.position, weapon_index) and not _weapon_button_touches.has(weapon_index):
+				_weapon_button_touches[weapon_index] = event.index
+				_select_weapon(weapon_index)
 				queue_redraw()
 				accept_event()
 				return
@@ -77,6 +95,13 @@ func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 		if _button_touches[action] == event.index:
 			_button_touches.erase(action)
 			Input.action_release(action)
+			queue_redraw()
+			accept_event()
+			return
+
+	for weapon_index in _weapon_button_touches.keys():
+		if _weapon_button_touches[weapon_index] == event.index:
+			_weapon_button_touches.erase(weapon_index)
 			queue_redraw()
 			accept_event()
 			return
@@ -125,14 +150,32 @@ func _is_inside_button(position: Vector2, action: StringName) -> bool:
 	return position.distance_to(_get_button_center(action)) <= BUTTON_RADIUS
 
 
+func _is_inside_weapon_button(position: Vector2, weapon_index: int) -> bool:
+	return position.distance_to(_get_weapon_button_center(weapon_index)) <= WEAPON_BUTTON_RADIUS
+
+
 func _get_joystick_center() -> Vector2:
-	return Vector2(size.x - JOYSTICK_RADIUS - 10.0, size.y - JOYSTICK_RADIUS - 10.0)
+	return Vector2(JOYSTICK_RADIUS + 10.0, size.y - JOYSTICK_RADIUS - 10.0)
 
 
 func _get_button_center(action: StringName) -> Vector2:
 	if action == SHOOT_ACTION:
-		return Vector2(size.x - 106.0, size.y - 52.0)
-	return Vector2(size.x - 54.0, size.y - 112.0)
+		return Vector2(size.x - 54.0, size.y - 52.0)
+	return Vector2(size.x - 106.0, size.y - 112.0)
+
+
+func _get_weapon_button_center(weapon_index: int) -> Vector2:
+	return Vector2(size.x - 26.0 - float(WEAPON_BUTTON_COUNT - weapon_index - 1) * 34.0, 26.0)
+
+
+func _select_weapon(weapon_index: int) -> void:
+	var player := get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+
+	var shot_component := player.get_node_or_null("ShotComponent") as ShotComponent
+	if shot_component != null:
+		shot_component.select_weapon(weapon_index)
 
 
 func _should_show_on_screen_controls() -> bool:

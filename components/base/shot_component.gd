@@ -99,6 +99,15 @@ func _select_weapon(index_change: int) -> void:
 	weapon_changed.emit(weapon)
 
 
+func select_weapon(index: int) -> void:
+	if index < 0 or index >= weapons.size() or index == current_weapon_index:
+		return
+
+	current_weapon_index = index
+	weapon = weapons[current_weapon_index]
+	weapon_changed.emit(weapon)
+
+
 func _find_input_component() -> InputComponent:
 	for child in _actor.get_children():
 		if child is InputComponent:
