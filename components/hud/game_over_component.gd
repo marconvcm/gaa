@@ -26,7 +26,7 @@ func _connect_player_death() -> void:
 	if player == null:
 		return
 
-	var hp_component := player.get_node_or_null("HPComponent") as HPComponent
+	var hp_component := player.get_node_or_null(HPComponent.__NAME__) as HPComponent
 	if hp_component != null:
 		hp_component.died.connect(_on_player_died)
 

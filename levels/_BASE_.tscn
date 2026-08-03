@@ -116,7 +116,7 @@ position = Vector2(1200, 180)
 
 [node name="HUD" parent="." unique_id=141513722 instance=ExtResource("4_hud")]
 
-[node name="OnScreenControllerLayer" parent="." instance=ExtResource("6_osc")]
+[node name="OnScreenControllerLayer" parent="." unique_id=1984801973 instance=ExtResource("6_osc")]
 
 [node name="CollectableObject" parent="." unique_id=1961004010 instance=ExtResource("5_i8ko7")]
 position = Vector2(168, 120)

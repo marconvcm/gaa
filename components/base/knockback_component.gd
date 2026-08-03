@@ -2,6 +2,8 @@
 class_name KnockbackComponent
 extends Node
 
+static var __NAME__: NodePath = ^"KnockbackComponent"
+
 @export_range(0.0, 5000.0, 1.0, "suffix:px/s²") var deceleration := 900.0
 @export var limit_to_current_room := false
 

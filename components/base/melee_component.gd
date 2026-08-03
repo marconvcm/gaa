@@ -2,6 +2,8 @@
 class_name MeleeComponent
 extends Node
 
+static var __NAME__: NodePath = ^"MeleeComponent"
+
 signal attack_started(hitbox: HitboxComponent)
 
 @export_range(0, 9999, 1) var damage := 1
@@ -28,7 +30,7 @@ func _ready() -> void:
 		return
 
 	_input_component = _find_input_component()
-	_move_component = _actor.get_node_or_null("MoveComponent") as MoveComponent
+	_move_component = _actor.get_node_or_null(MoveComponent.__NAME__) as MoveComponent
 	_animation_player = _actor.get_node_or_null("AnimationPlayer") as AnimationPlayer
 
 

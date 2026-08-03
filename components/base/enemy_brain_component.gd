@@ -6,6 +6,8 @@
 class_name EnemyBrainComponent
 extends Node
 
+static var __NAME__: NodePath = ^"EnemyBrainComponent"
+
 signal state_changed(previous_state: State, current_state: State)
 
 enum State {
@@ -50,12 +52,12 @@ func _ready() -> void:
 		set_physics_process(false)
 		return
 
-	_ai_input = _actor.get_node_or_null("AIInputComponent") as AIInputComponent
-	_melee_component = _actor.get_node_or_null("MeleeComponent") as MeleeComponent
-	_move_component = _actor.get_node_or_null("MoveComponent") as MoveComponent
-	_knockback_component = _actor.get_node_or_null("KnockbackComponent") as KnockbackComponent
-	_hp_component = _actor.get_node_or_null("HPComponent") as HPComponent
-	_enemy_component = _actor.get_node_or_null("EnemyComponent") as EnemyComponent
+	_ai_input = _actor.get_node_or_null(AIInputComponent.__NAME__) as AIInputComponent
+	_melee_component = _actor.get_node_or_null(MeleeComponent.__NAME__) as MeleeComponent
+	_move_component = _actor.get_node_or_null(MoveComponent.__NAME__) as MoveComponent
+	_knockback_component = _actor.get_node_or_null(KnockbackComponent.__NAME__) as KnockbackComponent
+	_hp_component = _actor.get_node_or_null(HPComponent.__NAME__) as HPComponent
+	_enemy_component = _actor.get_node_or_null(EnemyComponent.__NAME__) as EnemyComponent
 	if _ai_input == null:
 		push_error("EnemyBrainComponent requer um AIInputComponent no mesmo ator.")
 		set_physics_process(false)

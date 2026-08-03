@@ -37,16 +37,16 @@ func _connect_player_health() -> void:
 	if player == null:
 		return
 
-	var hp_component := player.get_node_or_null("HPComponent") as HPComponent
+	var hp_component := player.get_node_or_null(HPComponent.__NAME__) as HPComponent
 	if hp_component == null:
 		return
 
 	_health_value = hp_component.value
 	_health_value.value_changed.connect(_on_health_changed)
-	_shot_component = player.get_node_or_null("ShotComponent") as ShotComponent
+	_shot_component = player.get_node_or_null(ShotComponent.__NAME__) as ShotComponent
 	if _shot_component != null:
 		_shot_component.weapon_changed.connect(_on_weapon_changed)
-		_player_controller = player.get_node_or_null("PlayerControllerComponent") as PlayerControllerComponent
+		_player_controller = player.get_node_or_null(PlayerControllerComponent.__NAME__) as PlayerControllerComponent
 		if _player_controller != null:
 			_player_controller.ammunition_changed.connect(_on_ammunition_changed)
 		_on_weapon_changed(_shot_component.weapon)

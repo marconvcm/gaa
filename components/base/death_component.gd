@@ -26,10 +26,10 @@ func _ready() -> void:
 		set_process(false)
 		return
 
-	_hp_component = _actor.get_node_or_null("HPComponent") as HPComponent
-	_move_component = _actor.get_node_or_null("MoveComponent") as MoveComponent
-	_knockback_component = _actor.get_node_or_null("KnockbackComponent") as KnockbackComponent
-	_hurtbox_component = _actor.get_node_or_null("HurtboxComponent") as HurtboxComponent
+	_hp_component = _actor.get_node_or_null(HPComponent.__NAME__) as HPComponent
+	_move_component = _actor.get_node_or_null(MoveComponent.__NAME__) as MoveComponent
+	_knockback_component = _actor.get_node_or_null(KnockbackComponent.__NAME__) as KnockbackComponent
+	_hurtbox_component = _actor.get_node_or_null(HurtboxComponent.__NAME__) as HurtboxComponent
 	_sprite = _actor.get_node_or_null("Sprite") as Sprite2D
 	if _hp_component != null:
 		_hp_component.died.connect(prepare_to_die)

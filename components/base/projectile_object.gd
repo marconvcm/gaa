@@ -12,6 +12,7 @@ var direction := Vector2.RIGHT
 var source_actor: Node2D
 var _elapsed_time := 0.0
 var _hitbox: HitboxComponent
+var _has_finished := false
 
 
 static func create(
@@ -37,15 +38,23 @@ func _ready() -> void:
 	queue_redraw()
 
 
-func _process(delta: float) -> void:
-	global_position += direction * speed * delta
+func _physics_process(delta: float) -> void:
+	var motion := direction * speed * delta
+	var collision := _get_swept_collision(motion)
+	if not collision.is_empty() and _is_blocking_collision(collision):
+		var safe_fraction := _get_safe_motion_fraction(motion)
+		global_position += motion * safe_fraction
+		_handle_swept_collision(collision)
+		return
+
+	global_position += motion
 	if not RoomManager.is_position_inside_current_room(global_position):
-		queue_free()
+		_finish()
 		return
 
 	_elapsed_time += delta
 	if _elapsed_time >= lifetime:
-		queue_free()
+		_finish()
 
 
 func _draw() -> void:
@@ -70,7 +79,7 @@ func _create_hitbox() -> void:
 
 
 func _on_hit_landed(_hurtbox: HurtboxComponent) -> void:
-	queue_free()
+	_finish()
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -78,4 +87,72 @@ func _on_body_entered(body: Node2D) -> void:
 	# próprio TileMapLayer, e não como um StaticBody2D separado. Como a hitbox
 	# usa collision_mask = 1, ambos os casos já estão restritos à layer 1.
 	if body is StaticBody2D or body is TileMapLayer:
-		queue_free()
+		_finish()
+
+
+func _get_swept_collision(motion: Vector2) -> Dictionary:
+	if motion.is_zero_approx() or _hitbox == null:
+		return {}
+
+	var query := _create_shape_query(motion)
+	return get_world_2d().direct_space_state.get_rest_info(query)
+
+
+func _get_safe_motion_fraction(motion: Vector2) -> float:
+	var query := _create_shape_query(motion)
+	var motion_fractions := get_world_2d().direct_space_state.cast_motion(query)
+	if motion_fractions.is_empty():
+		return 0.0
+	return motion_fractions[0]
+
+
+func _create_shape_query(motion: Vector2) -> PhysicsShapeQueryParameters2D:
+	var query := PhysicsShapeQueryParameters2D.new()
+	var shape := CircleShape2D.new()
+	shape.radius = radius
+	query.shape = shape
+	query.transform = Transform2D(0.0, global_position)
+	query.motion = motion
+	query.collision_mask = _hitbox.collision_mask
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
+	var excluded_rids: Array[RID] = [_hitbox.get_rid()]
+	if source_actor is CollisionObject2D:
+		excluded_rids.append(source_actor.get_rid())
+	if source_actor != null:
+		var source_hurtbox := source_actor.get_node_or_null(HurtboxComponent.__NAME__) as HurtboxComponent
+		if source_hurtbox != null:
+			excluded_rids.append(source_hurtbox.get_rid())
+	query.exclude = excluded_rids
+	return query
+
+
+func _is_blocking_collision(collision: Dictionary) -> bool:
+	var collider: Object = collision.get("collider") as Object
+	var hurtbox := collider as HurtboxComponent
+	if hurtbox != null:
+		return hurtbox.can_receive_hit_from(_hitbox)
+
+	return collider is StaticBody2D or collider is TileMapLayer
+
+
+func _handle_swept_collision(collision: Dictionary) -> void:
+	var collider: Object = collision.get("collider") as Object
+	var hurtbox := collider as HurtboxComponent
+	if hurtbox != null:
+		hurtbox.receive_hit(_hitbox)
+		_hitbox.hit_landed.emit(hurtbox)
+		return
+
+	if collider is StaticBody2D or collider is TileMapLayer:
+		_finish()
+
+
+func _finish() -> void:
+	if _has_finished:
+		return
+
+	_has_finished = true
+	if _hitbox != null:
+		_hitbox.set_deferred("monitoring", false)
+	queue_free()

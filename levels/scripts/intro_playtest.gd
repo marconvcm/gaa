@@ -4,12 +4,14 @@ const GAME_SCENE_PATH := "res://levels/_BASE_.tscn"
 const FADE_DURATION := 0.4
 
 @onready var fade_overlay: ColorRect = $FadeOverlay
+@onready var on_screen_controller: OnScreenController = $OnScreenControllerLayer/OnScreenController
 
 var _is_transitioning := false
 
 
 func _ready() -> void:
 	fade_overlay.color.a = 0.0
+	on_screen_controller.shoot_requested.connect(_start_game)
 
 
 func _process(_delta: float) -> void:

@@ -2,6 +2,8 @@
 class_name MoveComponent 
 extends Node
 
+static var __NAME__: NodePath = ^"MoveComponent"
+
 @export_range(0.0, 5000.0, 1.0, "suffix:px/s") var speed := 160.0
 @export var use_eight_direction_movement := true
 @export var movement_enabled := true
@@ -25,8 +27,8 @@ func _ready() -> void:
 	if not movement_enabled:
 		set_physics_process(false)
 		return
-	_melee_component = _body.get_node_or_null("MeleeComponent") as MeleeComponent
-	_knockback_component = _body.get_node_or_null("KnockbackComponent") as KnockbackComponent
+	_melee_component = _body.get_node_or_null(MeleeComponent.__NAME__) as MeleeComponent
+	_knockback_component = _body.get_node_or_null(KnockbackComponent.__NAME__) as KnockbackComponent
 
 	if input_component == null:
 		input_component = _find_input_component()

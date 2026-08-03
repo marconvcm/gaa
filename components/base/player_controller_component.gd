@@ -2,6 +2,8 @@
 class_name PlayerControllerComponent
 extends Node
 
+static var __NAME__: NodePath = ^"PlayerControllerComponent"
+
 signal ammunition_changed(weapon: WeaponResource, clip_ammo: int, reserve_ammo: int)
 signal reload_started(weapon: WeaponResource)
 signal reload_finished(weapon: WeaponResource)
@@ -21,13 +23,13 @@ func _ready() -> void:
 		push_error("PlayerControllerComponent deve ser filho de um Node2D.")
 		return
 
-	_shot_component = actor.get_node_or_null("ShotComponent") as ShotComponent
+	_shot_component = actor.get_node_or_null(ShotComponent.__NAME__) as ShotComponent
 	if _shot_component == null:
 		push_error("PlayerControllerComponent requer um ShotComponent.")
 		return
 
-	_input_component = actor.get_node_or_null("PlayerInputComponent") as InputComponent
-	_move_component = actor.get_node_or_null("MoveComponent") as MoveComponent
+	_input_component = actor.get_node_or_null(PlayerInputComponent.__NAME__) as InputComponent
+	_move_component = actor.get_node_or_null(MoveComponent.__NAME__) as MoveComponent
 	for weapon in _shot_component.weapons:
 		_reserve_ammo_by_weapon[weapon.weapon_id] = weapon.ammo_capacity
 		_clip_ammo_by_weapon[weapon.weapon_id] = weapon.clip_size

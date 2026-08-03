@@ -18,10 +18,13 @@ const MOVE_DOWN_ACTION: StringName = &"move_down"
 const SHOOT_ACTION: StringName = &"shoot"
 const MELEE_ACTION: StringName = &"melee"
 
+signal shoot_requested
+
 var _joystick_touch_index := -1
 var _joystick_offset := Vector2.ZERO
 var _button_touches: Dictionary = {}
 var _weapon_button_touches: Dictionary = {}
+var _player_input_component: PlayerInputComponent
 
 
 func _ready() -> void:
@@ -69,7 +72,9 @@ func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 		for action in [SHOOT_ACTION, MELEE_ACTION]:
 			if _is_inside_button(event.position, action) and not _button_touches.has(action):
 				_button_touches[action] = event.index
-				Input.action_press(action)
+				_set_virtual_action_pressed(action, true)
+				if action == SHOOT_ACTION:
+					shoot_requested.emit()
 				queue_redraw()
 				accept_event()
 				return
@@ -94,7 +99,7 @@ func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 	for action in _button_touches.keys():
 		if _button_touches[action] == event.index:
 			_button_touches.erase(action)
-			Input.action_release(action)
+			_set_virtual_action_pressed(action, false)
 			queue_redraw()
 			accept_event()
 			return
@@ -123,23 +128,26 @@ func _update_joystick(touch_position: Vector2) -> void:
 
 
 func _set_movement_actions(direction: Vector2) -> void:
-	_set_action_strength(MOVE_LEFT_ACTION, maxf(-direction.x, 0.0))
-	_set_action_strength(MOVE_RIGHT_ACTION, maxf(direction.x, 0.0))
-	_set_action_strength(MOVE_UP_ACTION, maxf(-direction.y, 0.0))
-	_set_action_strength(MOVE_DOWN_ACTION, maxf(direction.y, 0.0))
+	var player_input_component := _get_player_input_component()
+	if player_input_component != null:
+		player_input_component.set_virtual_movement_direction(direction)
 
 
-func _set_action_strength(action: StringName, strength: float) -> void:
-	if is_zero_approx(strength):
-		Input.action_release(action)
+func _set_virtual_action_pressed(action: StringName, pressed: bool) -> void:
+	var player_input_component := _get_player_input_component()
+	if player_input_component == null:
 		return
 
-	Input.action_press(action, strength)
+	if action == SHOOT_ACTION:
+		player_input_component.set_virtual_shoot_pressed(pressed)
+	elif action == MELEE_ACTION:
+		player_input_component.set_virtual_melee_pressed(pressed)
 
 
 func _release_all_actions() -> void:
-	for action in [MOVE_LEFT_ACTION, MOVE_RIGHT_ACTION, MOVE_UP_ACTION, MOVE_DOWN_ACTION, SHOOT_ACTION, MELEE_ACTION]:
-		Input.action_release(action)
+	_set_movement_actions(Vector2.ZERO)
+	_set_virtual_action_pressed(SHOOT_ACTION, false)
+	_set_virtual_action_pressed(MELEE_ACTION, false)
 
 
 func _is_inside_joystick(position: Vector2) -> bool:
@@ -173,9 +181,21 @@ func _select_weapon(weapon_index: int) -> void:
 	if player == null:
 		return
 
-	var shot_component := player.get_node_or_null("ShotComponent") as ShotComponent
+	var shot_component := player.get_node_or_null(ShotComponent.__NAME__) as ShotComponent
 	if shot_component != null:
 		shot_component.select_weapon(weapon_index)
+
+
+func _get_player_input_component() -> PlayerInputComponent:
+	if is_instance_valid(_player_input_component):
+		return _player_input_component
+
+	var player := get_tree().get_first_node_in_group("player")
+	if player == null:
+		return null
+
+	_player_input_component = player.get_node_or_null(PlayerInputComponent.__NAME__) as PlayerInputComponent
+	return _player_input_component
 
 
 func _should_show_on_screen_controls() -> bool:

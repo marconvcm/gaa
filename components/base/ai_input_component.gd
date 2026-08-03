@@ -2,6 +2,8 @@
 class_name AIInputComponent
 extends InputComponent
 
+static var __NAME__: NodePath = ^"AIInputComponent"
+
 @export var target: Node2D
 @export_range(0.0, 1000.0, 1.0, "suffix:px") var stopping_distance := 4.0
 @export var patrol_offsets: Array[Vector2] = [Vector2(-40, 0), Vector2(40, 0)]

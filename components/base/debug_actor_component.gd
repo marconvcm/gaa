@@ -27,10 +27,10 @@ func _ready() -> void:
 		push_error("DebugActorComponent deve ser filho de um CharacterBody2D.")
 		set_process(false)
 		return
-	_move_component = _body.get_node_or_null("MoveComponent") as MoveComponent
-	_melee_component = _body.get_node_or_null("MeleeComponent") as MeleeComponent
-	_hp_component = _body.get_node_or_null("HPComponent") as HPComponent
-	_enemy_brain_component = _body.get_node_or_null("EnemyBrainComponent") as EnemyBrainComponent
+	_move_component = _body.get_node_or_null(MoveComponent.__NAME__) as MoveComponent
+	_melee_component = _body.get_node_or_null(MeleeComponent.__NAME__) as MeleeComponent
+	_hp_component = _body.get_node_or_null(HPComponent.__NAME__) as HPComponent
+	_enemy_brain_component = _body.get_node_or_null(EnemyBrainComponent.__NAME__) as EnemyBrainComponent
 
 	if show_only_in_debug_builds and not OS.has_feature("debug"):
 		visible = false

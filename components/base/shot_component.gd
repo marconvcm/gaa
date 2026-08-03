@@ -2,6 +2,8 @@
 class_name ShotComponent
 extends Node
 
+static var __NAME__: NodePath = ^"ShotComponent"
+
 signal projectile_fired(projectile: ProjectileObject)
 signal weapon_changed(weapon: WeaponResource)
 
@@ -26,7 +28,7 @@ func _ready() -> void:
 		return
 
 	_input_component = _find_input_component()
-	_move_component = _actor.get_node_or_null("MoveComponent") as MoveComponent
+	_move_component = _actor.get_node_or_null(MoveComponent.__NAME__) as MoveComponent
 	if weapons.is_empty():
 		weapons.append(WeaponResource.new())
 	current_weapon_index = posmod(current_weapon_index, weapons.size())

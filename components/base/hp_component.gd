@@ -2,6 +2,8 @@
 class_name HPComponent
 extends Node
 
+static var __NAME__: NodePath = ^"HPComponent"
+
 signal damage_taken(amount: float)
 signal hit_received(hitbox: HitboxComponent)
 signal died
@@ -11,7 +13,7 @@ signal died
 
 func _ready() -> void:
 	value.depleted.connect(_on_value_depleted)
-	var hurtbox := get_parent().get_node_or_null("HurtboxComponent") as HurtboxComponent
+	var hurtbox := get_parent().get_node_or_null(HurtboxComponent.__NAME__) as HurtboxComponent
 	if hurtbox != null:
 		hurtbox.hit_received.connect(_on_hit_received)
 

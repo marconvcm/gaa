@@ -2,6 +2,8 @@
 class_name EnemyComponent
 extends Node
 
+static var __NAME__: NodePath = ^"EnemyComponent"
+
 @export_range(0.0, 5.0, 0.01, "suffix:s") var hit_flash_duration := 0.3
 
 var _actor: Node2D
@@ -14,10 +16,10 @@ var _flash_id := 0
 
 func _ready() -> void:
 	_actor = get_parent() as Node2D
-	_hp_component = _actor.get_node_or_null("HPComponent") as HPComponent
-	_knockback_component = _actor.get_node_or_null("KnockbackComponent") as KnockbackComponent
+	_hp_component = _actor.get_node_or_null(HPComponent.__NAME__) as HPComponent
+	_knockback_component = _actor.get_node_or_null(KnockbackComponent.__NAME__) as KnockbackComponent
 	_sprite = _actor.get_node_or_null("Sprite") as Sprite2D
-	_enemy_brain_component = _actor.get_node_or_null("EnemyBrainComponent") as EnemyBrainComponent
+	_enemy_brain_component = _actor.get_node_or_null(EnemyBrainComponent.__NAME__) as EnemyBrainComponent
 
 	if _hp_component != null:
 		_hp_component.hit_received.connect(_on_hit_received)
